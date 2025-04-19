@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.core.files.storage import FileSystemStorage #To upload Profile Picture
 from django.urls import reverse
 import datetime # To Parse input DateTime into Python Date Time Object
+from django.contrib.auth.decorators import login_required
 
-from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, Attendance, AttendanceReport, LeaveReportStudent, FeedBackStudent, StudentResult
+from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, Attendance, AttendanceReport, LeaveReportStudent, FeedBackStudent, StudentResult, NotificationStudent
 
 
 def student_home(request):
@@ -193,6 +194,16 @@ def student_view_result(request):
         "student_result": student_result,
     }
     return render(request, "student_template/student_view_result.html", context)
+
+
+@login_required
+def student_notifications(request):
+    student = Students.objects.get(admin=request.user.id)
+    notifications = NotificationStudent.objects.filter(student_id=student).order_by('-created_at')
+    context = {
+        "notifications": notifications
+    }
+    return render(request, "student_template/student_notifications.html", context)
 
 
 

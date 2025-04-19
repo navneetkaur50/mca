@@ -1,11 +1,14 @@
-
 from django.urls import path, include
 from . import views
 from .import HodViews, StaffViews, StudentViews
 
 
 urlpatterns = [
-    path('', views.loginPage, name="login"),
+    path('', views.home, name="home"),
+    path('login/', views.loginPage, name="login"),
+    path('unified-login/', views.unified_login, name="unified_login"),
+    path('student/login/', views.student_login, name='student_login'),
+    path('staff/login/', views.staff_login, name='staff_login'),
     # path('accounts/', include('django.contrib.auth.urls')),
     path('doLogin/', views.doLogin, name="doLogin"),
     path('get_user_details/', views.get_user_details, name="get_user_details"),
@@ -58,8 +61,13 @@ urlpatterns = [
     path('admin_get_attendance_student/', HodViews.admin_get_attendance_student, name="admin_get_attendance_student"),
     path('admin_profile/', HodViews.admin_profile, name="admin_profile"),
     path('admin_profile_update/', HodViews.admin_profile_update, name="admin_profile_update"),
-    
-
+    path('manage_fees/', HodViews.manage_fees, name="manage_fees"),
+    path('add_fee/', HodViews.add_fee, name="add_fee"),
+    path('add_fee_save/', HodViews.add_fee_save, name="add_fee_save"),
+    path('edit_fee/<fee_id>/', HodViews.edit_fee, name="edit_fee"),
+    path('edit_fee_save/', HodViews.edit_fee_save, name="edit_fee_save"),
+    path('delete_fee/<fee_id>/', HodViews.delete_fee, name="delete_fee"),
+    path('view_student_dashboard/<int:student_id>/', HodViews.view_student_dashboard, name="view_student_dashboard"),
 
     # URLS for Staff
     path('staff_home/', StaffViews.staff_home, name="staff_home"),
@@ -90,4 +98,5 @@ urlpatterns = [
     path('student_profile/', StudentViews.student_profile, name="student_profile"),
     path('student_profile_update/', StudentViews.student_profile_update, name="student_profile_update"),
     path('student_view_result/', StudentViews.student_view_result, name="student_view_result"),
+    path('student_notifications/', StudentViews.student_notifications, name="student_notifications"),
 ]

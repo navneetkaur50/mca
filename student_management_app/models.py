@@ -168,6 +168,25 @@ class StudentResult(models.Model):
     objects = models.Manager()
 
 
+class Fee(models.Model):
+    student = models.ForeignKey(Students, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateField()
+    payment_method = models.CharField(max_length=50)
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=[
+        ('PAID', 'Paid'),
+        ('PENDING', 'Pending'),
+        ('FAILED', 'Failed')
+    ], default='PENDING')
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.student.admin.first_name} {self.student.admin.last_name} - {self.amount} - {self.status}"
+
+
 #Creating Django Signals
 
 # It's like trigger in database. It will run only when Data is Added in CustomUser model

@@ -90,3 +90,18 @@ class EditStudentForm(forms.Form):
     # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Pic", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
+
+
+class FeeForm(forms.Form):
+    amount = forms.DecimalField(label="Amount", max_digits=10, decimal_places=2, widget=forms.NumberInput(attrs={"class":"form-control"}))
+    payment_date = forms.DateField(label="Payment Date", widget=forms.DateInput(attrs={"class":"form-control", "type":"date"}))
+    payment_method = forms.ChoiceField(label="Payment Method", choices=[
+        ('CASH', 'Cash'),
+        ('BANK_TRANSFER', 'Bank Transfer'),
+        ('CREDIT_CARD', 'Credit Card'),
+        ('DEBIT_CARD', 'Debit Card'),
+        ('UPI', 'UPI'),
+        ('CHEQUE', 'Cheque')
+    ], widget=forms.Select(attrs={"class":"form-control"}))
+    transaction_id = forms.CharField(label="Transaction ID", required=False, widget=forms.TextInput(attrs={"class":"form-control"}))
+    description = forms.CharField(label="Description", required=False, widget=forms.Textarea(attrs={"class":"form-control", "rows":"3"}))

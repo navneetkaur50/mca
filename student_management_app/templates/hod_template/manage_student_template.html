@@ -95,6 +95,7 @@
                                 <td>
                                     <a href="{% url 'edit_student' student.admin.id %}" class="btn btn-success">Edit</a> 
                                     <a href="{% url 'delete_student' student.admin.id %}" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'view_student_dashboard' student.admin.id %}" class="btn btn-info">View Dashboard</a>
                                 </td>
                                 </tr>
                                 {% endfor %}

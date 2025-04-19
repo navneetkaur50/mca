@@ -120,7 +120,6 @@
               </a>
             </li>
 
-
             <li class="nav-item">
               {% url 'manage_session' as manage_session %}
               {% url 'edit_session' session_id=id as edit_session %}
@@ -142,6 +141,26 @@
               </a>
             </li>
 
+            <li class="nav-item">
+              {% url 'manage_fees' as manage_fees %}
+              {% url 'edit_fee' fee_id=id as edit_fee %}
+              <a href="{{ manage_fees }}" class="nav-link {% if request.path == manage_fees %} active {% endif %} {% if request.path == edit_fee %} active {% endif %}">
+                <i class="nav-icon fas fa-money-bill"></i>
+                <p>
+                  Manage Fees
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'add_fee' as add_fee %}
+              <a href="{{ add_fee }}" class="nav-link {% if request.path == add_fee %} active {% endif %}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Add Fee
+                </p>
+              </a>
+            </li>
 
             <li class="nav-item">
               {% url 'admin_view_attendance' as admin_view_attendance %}

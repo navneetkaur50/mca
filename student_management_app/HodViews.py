@@ -7,8 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
 
-from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
-from .forms import AddStudentForm, EditStudentForm
+from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport, Fee
+from .forms import AddStudentForm, EditStudentForm, FeeForm
 
 
 def admin_home(request):
@@ -789,6 +789,194 @@ def staff_profile(request):
 
 def student_profile(requtest):
     pass
+
+
+def manage_fees(request):
+    fees = Fee.objects.all().order_by('-created_at')
+    context = {
+        "fees": fees
+    }
+    return render(request, "hod_template/manage_fees.html", context)
+
+def add_fee(request):
+    form = FeeForm()
+    students = Students.objects.all()
+    context = {
+        "form": form,
+        "students": students
+    }
+    return render(request, "hod_template/add_fee.html", context)
+
+def add_fee_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_fee')
+    else:
+        student_id = request.POST.get('student')
+        amount = request.POST.get('amount')
+        payment_date = request.POST.get('payment_date')
+        payment_method = request.POST.get('payment_method')
+        transaction_id = request.POST.get('transaction_id')
+        description = request.POST.get('description')
+
+        try:
+            student = Students.objects.get(id=student_id)
+            fee = Fee(
+                student=student,
+                amount=amount,
+                payment_date=payment_date,
+                payment_method=payment_method,
+                transaction_id=transaction_id,
+                description=description,
+                status='PAID'
+            )
+            fee.save()
+            messages.success(request, "Fee Added Successfully!")
+            return redirect('manage_fees')
+        except:
+            messages.error(request, "Failed to Add Fee!")
+            return redirect('add_fee')
+
+def edit_fee(request, fee_id):
+    fee = Fee.objects.get(id=fee_id)
+    form = FeeForm(initial={
+        'amount': fee.amount,
+        'payment_date': fee.payment_date,
+        'payment_method': fee.payment_method,
+        'transaction_id': fee.transaction_id,
+        'description': fee.description
+    })
+    context = {
+        "form": form,
+        "fee": fee
+    }
+    return render(request, "hod_template/edit_fee.html", context)
+
+def edit_fee_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalid Method!")
+    else:
+        fee_id = request.POST.get('fee_id')
+        amount = request.POST.get('amount')
+        payment_date = request.POST.get('payment_date')
+        payment_method = request.POST.get('payment_method')
+        transaction_id = request.POST.get('transaction_id')
+        description = request.POST.get('description')
+        status = request.POST.get('status')
+
+        try:
+            fee = Fee.objects.get(id=fee_id)
+            fee.amount = amount
+            fee.payment_date = payment_date
+            fee.payment_method = payment_method
+            fee.transaction_id = transaction_id
+            fee.description = description
+            fee.status = status
+            fee.save()
+            messages.success(request, "Fee Updated Successfully!")
+            return redirect('manage_fees')
+        except:
+            messages.error(request, "Failed to Update Fee!")
+            return redirect('edit_fee', fee_id=fee_id)
+
+def delete_fee(request, fee_id):
+    try:
+        fee = Fee.objects.get(id=fee_id)
+        fee.delete()
+        messages.success(request, "Fee Deleted Successfully!")
+    except:
+        messages.error(request, "Failed to Delete Fee!")
+    return redirect('manage_fees')
+
+def view_student_dashboard(request, student_id):
+    student = Students.objects.get(admin=student_id)
+    total_attendance = AttendanceReport.objects.filter(student_id=student).count()
+    attendance_present = AttendanceReport.objects.filter(student_id=student, status=True).count()
+    attendance_absent = AttendanceReport.objects.filter(student_id=student, status=False).count()
+
+    course_obj = Courses.objects.get(id=student.course_id.id)
+    total_subjects = Subjects.objects.filter(course_id=course_obj).count()
+
+    subject_name = []
+    data_present = []
+    data_absent = []
+    subject_data = Subjects.objects.filter(course_id=student.course_id)
+    for subject in subject_data:
+        attendance = Attendance.objects.filter(subject_id=subject.id)
+        attendance_present_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=True, student_id=student.id).count()
+        attendance_absent_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=False, student_id=student.id).count()
+        subject_name.append(subject.subject_name)
+        data_present.append(attendance_present_count)
+        data_absent.append(attendance_absent_count)
+    
+    context = {
+        "total_attendance": total_attendance,
+        "attendance_present": attendance_present,
+        "attendance_absent": attendance_absent,
+        "total_subjects": total_subjects,
+        "subject_name": subject_name,
+        "data_present": data_present,
+        "data_absent": data_absent,
+        "student": student
+    }
+    return render(request, "hod_template/view_student_dashboard.html", context)
+
+def view_staff_dashboard(request, staff_id):
+    staff = Staffs.objects.get(admin=staff_id)
+    
+    # Fetching All Students under Staff
+    subjects = Subjects.objects.filter(staff_id=staff.admin.id)
+    course_id_list = []
+    for subject in subjects:
+        course = Courses.objects.get(id=subject.course_id.id)
+        course_id_list.append(course.id)
+    
+    final_course = []
+    # Removing Duplicate Course Id
+    for course_id in course_id_list:
+        if course_id not in final_course:
+            final_course.append(course_id)
+    
+    students_count = Students.objects.filter(course_id__in=final_course).count()
+    subject_count = subjects.count()
+
+    # Fetch All Attendance Count
+    attendance_count = Attendance.objects.filter(subject_id__in=subjects).count()
+    # Fetch All Approve Leave
+    leave_count = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
+
+    #Fetch Attendance Data by Subjects
+    subject_list = []
+    attendance_list = []
+    for subject in subjects:
+        attendance_count1 = Attendance.objects.filter(subject_id=subject.id).count()
+        subject_list.append(subject.subject_name)
+        attendance_list.append(attendance_count1)
+
+    students_attendance = Students.objects.filter(course_id__in=final_course)
+    student_list = []
+    student_list_attendance_present = []
+    student_list_attendance_absent = []
+    for student in students_attendance:
+        attendance_present_count = AttendanceReport.objects.filter(status=True, student_id=student.id).count()
+        attendance_absent_count = AttendanceReport.objects.filter(status=False, student_id=student.id).count()
+        student_list.append(student.admin.first_name+" "+ student.admin.last_name)
+        student_list_attendance_present.append(attendance_present_count)
+        student_list_attendance_absent.append(attendance_absent_count)
+
+    context = {
+        "staff": staff,
+        "students_count": students_count,
+        "attendance_count": attendance_count,
+        "leave_count": leave_count,
+        "subject_count": subject_count,
+        "subject_list": subject_list,
+        "attendance_list": attendance_list,
+        "student_list": student_list,
+        "attendance_present_list": student_list_attendance_present,
+        "attendance_absent_list": student_list_attendance_absent
+    }
+    return render(request, "hod_template/view_staff_dashboard.html", context)
 
 
 
