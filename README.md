@@ -1,164 +1,107 @@
-# Django Student Management System (beta)
-This is a Simple Student Management System Developed for Educational Purpose using Python (Django).
-Feel free to make changes based on your requirements.
-
-[Project Demo on YouTube](https://www.youtube.com/watch?v=kArCR96m7uo "Django Student Management System Demo")
-
-I've created this project while learnging Django and followed tutorial series from **SuperCoders**
-
-And if you like this project then ADD a STAR ⭐️  to this project 👆
+# Edu Master - Enhanced Student Management System
+This is an enhanced Student Management System built with Python (Django), featuring additional functionalities like Fee Management.
 
 ## Features of this Project
 
 ### A. Admin Users Can
-1. See Overall Summary Charts of Stuudents Performance, Staffs Perfomrances, Courses, Subjects, Leave, etc.
+1. See Overall Summary Charts of Students Performance, Staffs Performances, Courses, Subjects, Leave, etc.
 2. Manage Staffs (Add, Update and Delete)
 3. Manage Students (Add, Update and Delete)
 4. Manage Course (Add, Update and Delete)
 5. Manage Subjects (Add, Update and Delete)
 6. Manage Sessions (Add, Update and Delete)
-7. View Student Attendance
-8. Review and Reply Student/Staff Feedback
-9. Review (Approve/Reject) Student/Staff Leave
+7. Manage Fee Structure and Student Payments
+8. View Student Attendance
+9. Review and Reply Student/Staff Feedback
+10. Review (Approve/Reject) Student/Staff Leave
 
 ### B. Staff/Teachers Can
 1. See the Overall Summary Charts related to their students, their subjects, leave status, etc.
 2. Take/Update Students Attendance
 3. Add/Update Result
-4. Apply for Leave
-5. Send Feedback to HOD
+4. View Student Fee Status
+5. Apply for Leave
+6. Send Feedback to HOD
 
 ### C. Students Can
 1. See the Overall Summary Charts related to their attendance, their subjects, leave status, etc.
 2. View Attendance
 3. View Result
-4. Apply for Leave
-5. Send Feedback to HOD
+4. View Fee Status and Payment History
+5. Apply for Leave
+6. Send Feedback to HOD
 
-
-## Support Developer
-1. Subscribe & Share my YouTube Channel - https://bit.ly/vijay-thapa-online-courses
-2. Add a Star 🌟  to this 👆 Repository
-
-
-## Donate
-
-**[PayPal](https://bit.ly/support-vijay-thapa)**
-
-**[Buy me a Coffee  ☕️](https://www.buymeacoffee.com/vijaythapa)**
-
-**Donate by wire transfer:** E-Mail at *donate@vijaythapa.com* for wire transfer details. 
-
-
-## How to Install and Run this project?
+## Installation and Setup
 
 ### Pre-Requisites:
-1. Install Git Version Control
-[ https://git-scm.com/ ]
+1. Python 3.x
+2. pip (Package Manager)
+3. Virtual Environment
 
-2. Install Python Latest Version
-[ https://www.python.org/downloads/ ]
+### Installation Steps:
 
-3. Install Pip (Package Manager)
-[ https://pip.pypa.io/en/stable/installing/ ]
-
-*Alternative to Pip is Homebrew*
-
-### Installation
-**1. Create a Folder where you want to save the project**
-
-**2. Create a Virtual Environment and Activate**
-
-Install Virtual Environment First
-```
-$  pip install virtualenv
+1. Create and activate virtual environment:
+```bash
+python -m venv venv
+source venv/scripts/activate  # For Windows
+source venv/bin/activate      # For Mac/Linux
 ```
 
-Create Virtual Environment
-
-For Windows
-```
-$  python -m venv venv
-```
-For Mac
-```
-$  python3 -m venv venv
+2. Install required packages:
+```bash
+pip install -r requirements.txt
 ```
 
-Activate Virtual Environment
-
-For Windows
+3. Configure environment variables in .env file:
 ```
-$  source venv/scripts/activate
-```
-
-For Mac
-```
-$  source venv/bin/activate
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
-**3. Clone this project**
-```
-$  git clone https://github.com/vijaythapa333/django-student-management-system.git
-```
-
-Then, Enter the project
-```
-$  cd django-student-management-system
+4. Run migrations:
+```bash
+python manage.py migrate
 ```
 
-**4. Install Requirements from 'requirements.txt'**
-```python
-$  pip install -r requirements.txt
+5. Create superuser:
+```bash
+python manage.py createsuperuser
 ```
 
-**5. Add the hosts**
-
-- Got to settings.py file 
-- Then, On allowed hosts, Add [‘*’]. 
-```python
-ALLOWED_HOSTS = ['*']
-```
-*No need to change on Mac.*
-
-
-**6. Now Run Server**
-
-Command for PC:
-```python
-$ python manage.py runserver
+6. Run the development server:
+```bash
+python manage.py runserver
 ```
 
-Command for Mac:
-```python
-$ python3 manage.py runserver
-```
+### Default Login Credentials
 
-**7. Login Credentials**
+**Admin Account**
+- Email: admin@gmail.com
+- Password: admin
 
-Create Super User (HOD)
-```
-$  python manage.py createsuperuser
-```
-Then Add Email, Username and Password
+**Staff Account**
+- Email: staff@gmail.com
+- Password: staff
 
-**or Use Default Credentials**
+**Student Account**
+- Email: student@gmail.com
+- Password: student
 
-*For HOD /SuperAdmin*
-Email: admin@gmail.com
-Password: admin
+## Custom Features Added
 
-*For Staff*
-Email: staff@gmail.com
-Password: staff
+1. **Fee Management System**
+   - Set up fee structure for different courses
+   - Track student payments
+   - Generate payment receipts
+   - View payment history
+   - Payment status dashboard
 
-*For Student*
-Email: student@gmail.com
-Password: student
+2. **Enhanced UI/UX**
+   - Modern interface design
+   - Responsive dashboard
+   - Improved navigation
 
-
-
-## For Sponsor or Projects Enquiry
-1. Email - hi@vijaythapa.com
-2. LinkedIn - [vijaythapa](https://www.linkedin.com/in/vijaythapa "Vijay Thapa on LinkedIn")
+## Deployment
+The application is deployed on Render and can be accessed at your-app-specific-url.onrender.com
 
