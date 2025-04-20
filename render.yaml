@@ -1,18 +1,26 @@
 services:
   - type: web
-    name: edu-master
+    name: mca1
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn student_management_system.wsgi:application
+    region: singapore
+    buildCommand: |
+      cd django-student-management-system
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: cd django-student-management-system && gunicorn student_management_system.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.9
       - key: DEBUG
         value: False
-      - key: SECRET_KEY
-        value: (i#*06f#keydy_fh17bf=$0f6v)^wr^l7*u4gq42m*sztu#2_m
       - key: ALLOWED_HOSTS
         value: .onrender.com
       - key: CSRF_TRUSTED_ORIGINS
         value: https://*.onrender.com
+      - key: DJANGO_SETTINGS_MODULE
+        value: student_management_system.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///db.sqlite3
     autoDeploy: true 
